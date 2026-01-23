@@ -4,7 +4,11 @@ services:
     image: mysql:9
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: apppasswd
+      MYSQL_ROOT_PASSWORD: todoapp-passwd-root
+      MYSQL_DATABASE: todoapp
+      # The actual user used by the nestjs app
+      MYSQL_USER: todoapp-user
+      MYSQL_PASSWORD: todoapp-passwd-user
     ports:
       - 3306:3306
 
@@ -19,4 +23,4 @@ services:
       PMA_HOST: db
       PMA_PORT: 3306
       PMA_USER: root
-      PMA_PASSWORD: apppasswd
+      PMA_PASSWORD: todoapp-passwd-root
