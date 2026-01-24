@@ -40,9 +40,9 @@ export class ItemsService {
     }
 
     // create one item
-    create(createItemDto: CreateItemDto): Item {
-        let new_item = this.itemRepository.create(createItemDto);
-        return new_item;
+    async create(createItemDto: CreateItemDto): Promise<Item> {
+        const new_item = this.itemRepository.create(createItemDto);
+        return await this.itemRepository.save(new_item);
     }
 
     // delete one item
