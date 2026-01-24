@@ -2,72 +2,67 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Item } from './entities/item.entity';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 /* Main provider class for /items */
 // in short, it does the actual CRUD operations for this resources and more
 @Injectable()
 export class ItemsService {
-    // FIXME: mock database,
-    // this is temporary, until we do provide a proper ORM integration
-    // into all of this
-    private items: Item[] = [{
-        id: 1,
-        task: "some task I'm supposed to do",
-        tags: [
-            "hello", "there"
-        ]
-    }];
+    constructor(
+
+        // -----------------------------------------
+        // NestJS follows the repository pattern, and we use a repository
+        // per entity as an abstraction to the raw database table
+        // in the order to get entity instances from it.
+        // -----------------------------------------
+        // The constructor defined here automatically
+        // initialises a private member variable that will act as the repo
+        // for the Item entity
+        @InjectRepository(Item)
+        private readonly itemRepository: Repository<Item>
+    ) { }
 
     // get all items
-    findAll(): Item[] {
-        return this.items;
+    findAll(): Promise<Item[]> {
+        return this.itemRepository.find();
     }
 
     // find one item
-    findOne(id: string): Item {
-        const item = this.items.find((item) => item.id === +id);
+    async findOne(id: string): Promise<Item> {
+        const item = await this.itemRepository.findOne({ where: { id: +id } });
+
         if (!item) {
             throw new NotFoundException(`Item ${id} not found`)
         }
+
         return item;
     }
 
     // create one item
-    create(createItemDto: CreateItemDto): object {
-        let new_item = {
-            // FIXME: this is definitely going to change
-            id: this.items.length + 1,
-            task: createItemDto.task,
-            tags: createItemDto.tags
-        }
-        this.items.push(new_item);
+    create(createItemDto: CreateItemDto): Item {
+        let new_item = this.itemRepository.create(createItemDto);
         return new_item;
     }
 
     // delete one item
-    delete(id: string): void {
-        let itemIdx = this.items.findIndex((item) => item.id === +id);
-        if (itemIdx >= 0) {
-            this.items.splice(itemIdx, 1);
-        } else {
-            throw new NotFoundException(`Item ${id} not found`)
-        }
+    async remove(id: string): Promise<void> {
+        const item = await this.findOne(id); // DRY
+        this.itemRepository.remove(item);
     }
 
     // update an item
-    update(id: string, updateItemDto: UpdateItemDto): Item {
-        let i: Item | undefined = this.items.find((item) => item.id === +id);
-        if (!i) {
+    async update(id: string, updateItemDto: UpdateItemDto): Promise<Item> {
+        const item = await this.itemRepository.preload({
+            id: +id,
+            ...updateItemDto
+        })
+
+        if (!item) {
             throw new NotFoundException(`Item ${id} not found`)
         }
-        // FIXME: this is definitely going to change
-        if (updateItemDto.task !== undefined) {
-            i.task = updateItemDto.task;
-        }
-        if (updateItemDto.tags !== undefined) {
-            i.tags = updateItemDto.tags;
-        }
-        return i;
+
+        return this.itemRepository.save(item);
     }
 
 }

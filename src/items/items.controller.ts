@@ -31,7 +31,7 @@ export class ItemsController {
     // DELETE /items/:id
     @Delete(':id')
     delete(@Param('id') id: string) {
-        this.itemsService.delete(id);
+        this.itemsService.remove(id);
     }
 
     // PATCH /items/:id
