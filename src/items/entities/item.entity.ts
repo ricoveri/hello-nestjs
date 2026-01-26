@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Tag } from "./tag.entity";
 
 /* Item entity */
 @Entity('items') // sql table == items
@@ -9,10 +10,16 @@ export class Item {
     @Column()
     task: string;
 
-    // though tags is an array, its values are stored
-    // as plain JSON strings. Also, by setting nullable to
-    // true, makes this column optional upon creation of a new
-    // entity instance in the database.
-    @Column('json', { nullable: true })
-    tags: string[];
+    // Implementation of Many-to-Many relationship with Tag entity
+    // This will create a join table named "item_tags_tag" by default
+    // and will link items and tags together appropriately
+    @JoinTable() // The "owning" side of the relationship needs to have this decorator
+    @ManyToMany( // define the relationship (both parties need to have it defined)
+        () => Tag,
+        (tag) => tag.items, // what is an "item" within Tag entity?
+        {
+            cascade: true // automatically create tags if they don't exist
+        }
+    )
+    tags: Tag[];
 }

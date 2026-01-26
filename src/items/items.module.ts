@@ -3,6 +3,7 @@ import { ItemsController } from './items.controller';
 import { ItemsService } from './items.service';
 import { Item } from './entities/item.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Tag } from './entities/tag.entity';
 
 // Instead of providing ItemsController and ItemsService into
 // the main AppModule, we compact them into their own module, which
@@ -11,7 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
     imports: [
         // Register the Item Entity
-        TypeOrmModule.forFeature([Item])
+        TypeOrmModule.forFeature([Item, Tag])
     ],
     controllers: [ItemsController],
     providers: [ItemsService]
