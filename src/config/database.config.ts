@@ -23,7 +23,6 @@ import Joi from "joi";
 
 // Define the schema for validation using Joi
 const schema = Joi.object({
-    type: Joi.string().valid('mysql').required(),
     host: Joi.string().required(),
     port: Joi.number().default(3306).required(),
     user: Joi.string().required(),
