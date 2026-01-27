@@ -35,7 +35,6 @@ const schema = Joi.object({
 // Configuration factory function
 export default registerAs('database', () => {
     const config = {
-        type: 'mysql',
         host: process.env.DATABASE_HOST,
         port: Number(process.env.DATABASE_PORT),
         user: process.env.DATABASE_USER,
