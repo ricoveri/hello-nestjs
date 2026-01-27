@@ -1,3 +1,18 @@
+
+/**
+ * Root application module for the NestJS todo application.
+ *
+ * This module configures and imports all necessary modules including:
+ * - Configuration management (environment variables and database settings)
+ * - TypeORM database connection with MySQL
+ * - Feature modules (Items)
+ *
+ * @remarks
+ * The database synchronize option is set to true for development convenience.
+ * This should be disabled in production environments.
+ *
+ * @module AppModule
+ */
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -31,7 +46,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         password: configService.get<string>('database.password'),
         database: configService.get<string>('database.database'),
         autoLoadEntities: true,
-        synchronize: true, // WARNING: DO NOT USE IN PRODUCTION
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // NOTE: In production, set synchronize to false and use migrations
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        synchronize: true,
       }),
 
     }),
