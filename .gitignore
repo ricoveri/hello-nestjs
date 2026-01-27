@@ -36,11 +36,18 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+# ----------------------------------------------------------
+# NOTE: these normally should be ignored, I'm explicitly
+# including the .env file here for demonstration purposes.
+# Still, you might want to exclude these, especially if
+# you're planning to fork this repo and include your own
+# sensitive data.
+# ----------------------------------------------------------
+# .env
+# .env.development.local
+# .env.test.local
+# .env.production.local
+# .env.local
 
 # temp directory
 .temp

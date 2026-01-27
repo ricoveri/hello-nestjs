@@ -42,30 +42,18 @@ The app features a single resource (`/items`) with two entities dancing in a Man
    npm install
    ```
 
-3. Create a `.env` file in the root directory (don't skip this! 🔑)
-   npm install
+3. **Configure Environment Variables** 🔑
+   A `.env` file is included in the repository with default database credentials for quick setup.
 
-   ```
+   > ⚠️ **Note**: For demonstration purposes, the `.env` file is committed to this repo. In a real-world scenario, you should **never** commit `.env` files with sensitive credentials. If you fork this repo and plan to use your own credentials, uncomment the `.env` line in `.gitignore` to keep your secrets safe! 🔒
 
-   ```
-
-4. Create a `.env` file in the root directory:
-
-   ```env
-   DATABASE_HOST=localhost
-   DATABASE_PORT=3306
-   DATABASE_USER=todoapp-user
-   DATABASE_PASSWORD=todoapp-passwd-user
-   DATABASE_NAME=todoapp
-   ```
-
-5. Start the Docker containers (and watch the magic happen ✨):
+4. Start the Docker containers (and watch the magic happen ✨):
 
    ```bash
    docker compose up -d
    ```
 
-6. Run the application:
+5. Run the application:
 
    ```bash
    # development mode
@@ -82,6 +70,7 @@ The app features a single resource (`/items`) with two entities dancing in a Man
 
 - **API**: http://localhost:3000 🎯
 - **phpMyAdmin**: http://localhost:8080 🔍 (username/password from your `.env` file)
+- **MySQL**: Accessible on `localhost:3306` with credentials from your `.env` file 🗄️
 
 ## 🧪 Testing
 
@@ -106,6 +95,4 @@ npm run test:cov
 
 This is a learning project made with ❤️ and lots of ☕. Feel free to use it as a reference for your own NestJS journey! 🚀
 
----
-
-_Remember: Every expert was once a beginner who refused to give up!_ 💪
+Licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
