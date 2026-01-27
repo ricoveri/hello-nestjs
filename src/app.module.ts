@@ -3,25 +3,46 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ItemsModule } from './items/items.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import databaseConfig from './config/database.config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 // Main AppModule used by the nest instance created
 // at main.ts
 @Module({
   imports: [
-    ItemsModule,
+    // Configuration module goes in here
+    // ------------------------------------
+
+    // Load environment variables and database configuration
+    ConfigModule.forRoot(), // load .env variables
+    ConfigModule.forFeature(databaseConfig), // load database configuration
+
+
     // TypeOrm integration goes in here
     // ------------------------------------
-    TypeOrmModule.forRoot({
-      type: 'mysql', // type of our database
-      host: 'localhost', // database host
-      port: 3306, // database host
-      username: 'todoapp-user', // username
-      password: 'todoapp-passwd-user', // user password (same as the one set in docker-compose.yml)
-      database: 'todoapp', // name of our database,
-      autoLoadEntities: true, // models will be loaded automatically
-      // WARNING: DO NOT USE THIS ONE IN A PRODUCTION ENVIRONMENT
-      synchronize: true, // your entities will be synced with the database(recommended: disable in prod)
-    })], // Include all resource modules
+    TypeOrmModule.forRootAsync({ // async, since this depends on ConfigService
+      imports: [ConfigModule], // explicitly import ConfigModule
+      inject: [ConfigService], // so we can inject ConfigService upon initialization
+      useFactory: (configService: ConfigService) => ({
+        type: configService.get<'mysql'>('database.type'),
+        host: configService.get<string>('database.host'),
+        port: configService.get<number>('database.port'),
+        username: configService.get<string>('database.user'),
+        password: configService.get<string>('database.password'),
+        database: configService.get<string>('database.database'),
+        autoLoadEntities: true,
+        synchronize: true, // WARNING: DO NOT USE IN PRODUCTION
+      }),
+
+    }),
+
+    // Resource modules go in here
+    // ------------------------------------
+    ItemsModule,
+  ],
+
+  // Include all resource modules
+  // ------------------------------------
   controllers: [AppController], // FIXME: not sure if we're gonna need this controller
   providers: [AppService], // FIXME: not sure if we're gonna need this service
 })
